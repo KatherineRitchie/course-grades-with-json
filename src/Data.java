@@ -1,3 +1,5 @@
+import com.google.gson.Gson;
+
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -64,5 +66,48 @@ public class Data {
             System.exit(-1);
             return null;  // note that this return will never execute, but Java wants it there.
         }
+    }
+
+    /**
+     * Turns course object into a string format that reflects JSON file format.
+     * Used primarily for testing.
+     * @return String that matches JSON file
+     */
+    public static String getCourseToString(Course course) {
+        StringBuilder courseStringBuilder = new StringBuilder();
+        courseStringBuilder.append("{ \"CRN\": " + course.getCrn() + ", ");
+        courseStringBuilder.append("\"Subject\": \"" + course.getSubject() + "\", ");
+        courseStringBuilder.append("\"Number\": " + course.getNumber() + ", ");
+        courseStringBuilder.append("\"Title\": \"" + course.getTitle() + "\", ");
+        courseStringBuilder.append("\"Section\": \"" + course.getSection() + "\", ");
+        courseStringBuilder.append("\"Type\": \"" + course.getType() + "\", ");
+        courseStringBuilder.append("\"Term\": " + course.getTerm() + ", ");
+        courseStringBuilder.append("\"Instructor\": \"" + course.getInstructor() + "\", ");
+        courseStringBuilder.append("\"Grades\": " + Arrays.toString(course.getGrades()) + ", ");
+        courseStringBuilder.append("\"Average\": " + course.getAverage() + " }");
+        return courseStringBuilder.toString();
+    }
+
+    /**
+     * Accepts a filename string and returns an ArrayList of Course objects.
+     * @param filename String should end with ".json"
+     * @return ArrayList<Course>
+     */
+    public static ArrayList<Course> getJsonFileToList(String filename) {
+        Gson gson = new Gson();
+        String coursesString = getFileContentsAsString(filename);
+        Course[] courseArray = gson.fromJson(coursesString, Course[].class);
+        return new ArrayList<Course>(Arrays.asList(courseArray));
+    }
+
+    /**
+     * Accepts String from JSON file format and converts to an ArrayList of Course objects
+     * @param coursesString arbitrary String in json file formate
+     * @return ArrayList of Course objects
+     */
+    public static ArrayList<Course> getStringToList(String coursesString) {
+        Gson gson = new Gson();
+        Course[] coursesArray = gson.fromJson(coursesString, Course[].class);
+        return new ArrayList<Course>(Arrays.asList(coursesArray));
     }
 }
