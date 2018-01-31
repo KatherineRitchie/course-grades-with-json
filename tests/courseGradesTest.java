@@ -19,7 +19,7 @@ public class courseGradesTest {
 
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         Gson courseGson = new Gson();
         course = courseGson.fromJson(COURSE, Course.class);
 
@@ -59,12 +59,6 @@ public class courseGradesTest {
             assertTrue(true);
         }
     }
-
-    /**
-     * @Test
-    public void testJsonParserUtilites() {
-        System.out.println(Data.getFileContentsAsString("Fall2013.json"));
-    }*/
 
     @Test
     public void testCoursesOfSubject() {
@@ -130,14 +124,32 @@ public class courseGradesTest {
         assertTrue(actualCourseList.equals(expectedCourseList));
     }
 
+    @Test
+    public void testCountStudentsIn() {
+        String coursesString = "[{ \"CRN\": 53742, \"Subject\": \"CEE\", \"Number\": 408, \"Title\": \"Railroad Transportation Engrg\", \"Section\": \"E3\", \"Type\": \"LCD\", \"Term\": 120138, \"Instructor\": \"Barkan, Christopher P\", \"Grades\": [1, 6, 5, 3, 6, 4, 3, 4, 1, 0, 1, 0, 0, 0], \"Average\": 3.09 },\n" + "{ \"CRN\": 53743, \"Subject\": \"CEE\", \"Number\": 409, \"Title\": \"Railroad Track Engineering\", \"Section\": \"TW3\", \"Type\": \"LCD\", \"Term\": 120138, \"Instructor\": \"Uzarski, Donald R\", \"Grades\": [1, 3, 13, 2, 2, 5, 2, 1, 2, 0, 0, 0, 0, 0], \"Average\": 3.24 },\n" + "{ \"CRN\": 58934, \"Subject\": \"CEE\", \"Number\": 498, \"Title\": \"High Speed Rail Engineering\", \"Section\": \"HS3\", \"Type\": \"LCD\", \"Term\": 120138, \"Instructor\": \"Kao, Tsung-Chung\", \"Grades\": [1, 3, 15, 6, 3, 4, 1, 0, 1, 0, 0, 0, 0, 0], \"Average\": 3.37 }]";
 
-    /*@Test
-    public void testCoursesOfSubjectEmpty() {
-        Course[] expectedCourseArray = new Course[0];
-        ArrayList<Course> expectedCourseList = new ArrayList<>(Arrays.asList(expectedCourseArray));
-        assertTrue(expectedCourseList.equals(ParsingUtil.coursesOfSubject("ZZ", "Fall2013.json")));
-        ErrorConstants.successMessage();
-    }*/
+        ArrayList<Course> courseList = Data.getStringToList(coursesString);
+        int actualStudentCount = ParsingUtil.countStudents(courseList);
+        assertEquals(99, actualStudentCount);
+    }
+
+    @Test
+    public void testCountsStudentsInRange() {
+        String coursesString = "[{ \"CRN\": 53742, \"Subject\": \"CEE\", \"Number\": 408, \"Title\": \"Railroad Transportation Engrg\", \"Section\": \"E3\", \"Type\": \"LCD\", \"Term\": 120138, \"Instructor\": \"Barkan, Christopher P\", \"Grades\": [1, 6, 5, 3, 6, 4, 3, 4, 1, 0, 1, 0, 0, 0], \"Average\": 3.09 },\n" + "{ \"CRN\": 53743, \"Subject\": \"CEE\", \"Number\": 409, \"Title\": \"Railroad Track Engineering\", \"Section\": \"TW3\", \"Type\": \"LCD\", \"Term\": 120138, \"Instructor\": \"Uzarski, Donald R\", \"Grades\": [1, 3, 13, 2, 2, 5, 2, 1, 2, 0, 0, 0, 0, 0], \"Average\": 3.24 },\n" + "{ \"CRN\": 58934, \"Subject\": \"CEE\", \"Number\": 498, \"Title\": \"High Speed Rail Engineering\", \"Section\": \"HS3\", \"Type\": \"LCD\", \"Term\": 120138, \"Instructor\": \"Kao, Tsung-Chung\", \"Grades\": [1, 3, 15, 6, 3, 4, 1, 0, 1, 0, 0, 0, 0, 0], \"Average\": 3.37 }]";
+
+        ArrayList<Course> courseList = Data.getStringToList(coursesString);
+        int actualStudentCount = ParsingUtil.countStudentsInRange("A", "A+", courseList);
+        assertEquals(15, actualStudentCount);
+    }
+
+    @Test
+    public void testWeightedAverage() {
+        String coursesString = "[{ \"CRN\": 53742, \"Subject\": \"CEE\", \"Number\": 408, \"Title\": \"Railroad Transportation Engrg\", \"Section\": \"E3\", \"Type\": \"LCD\", \"Term\": 120138, \"Instructor\": \"Barkan, Christopher P\", \"Grades\": [1, 6, 5, 3, 6, 4, 3, 4, 1, 0, 1, 0, 0, 0], \"Average\": 3.09 },\n" + "{ \"CRN\": 53743, \"Subject\": \"CEE\", \"Number\": 409, \"Title\": \"Railroad Track Engineering\", \"Section\": \"TW3\", \"Type\": \"LCD\", \"Term\": 120138, \"Instructor\": \"Uzarski, Donald R\", \"Grades\": [1, 3, 13, 2, 2, 5, 2, 1, 2, 0, 0, 0, 0, 0], \"Average\": 3.24 },\n" + "{ \"CRN\": 58934, \"Subject\": \"CEE\", \"Number\": 498, \"Title\": \"High Speed Rail Engineering\", \"Section\": \"HS3\", \"Type\": \"LCD\", \"Term\": 120138, \"Instructor\": \"Kao, Tsung-Chung\", \"Grades\": [1, 3, 15, 6, 3, 4, 1, 0, 1, 0, 0, 0, 0, 0], \"Average\": 3.37 }]";
+
+        ArrayList<Course> courseList = Data.getStringToList(coursesString);
+        double actualWeightedAverage = ParsingUtil.weightedAverage(courseList);
+        assertEquals(3.2331313, actualWeightedAverage, 0.01);
+    }
 
     @Test
     public void testCourseToString() {
